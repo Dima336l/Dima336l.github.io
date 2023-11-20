@@ -1,0 +1,11 @@
+#canvas1 {
+  background-image: url(../images/flappybird\ images/gameBackground.png);
+  background-size: cover;
+  top:15%;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width:700px;
+  height: 400px;
+  border: 2px solid black;
+}

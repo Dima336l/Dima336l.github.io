@@ -1,0 +1,1104 @@
+body {
+  background-image: url(../images/pixelatedSky.jpg);
+  background-size: cover;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: "Comic Sans MS" !important;
+}
+
+/* Styling topnav */
+.topnav {
+  display: flex;
+  height: 50px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+}
+
+.topnav a {
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 25px;
+  color: white;
+}
+
+.topnav-icon {
+  position: relative;
+  width: 150px;
+  height: 100px;
+
+  margin-left: -20px;
+}
+
+.topnav-logo {
+  padding-top: 25px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.topnav a.active {
+  background-color: #02a2d8;
+  color: #fff;
+}
+
+.topnav a:not(.topnav-icon):not(.active):hover {
+  color: #fff;
+}
+
+.right {
+  margin-left: auto;
+}
+
+.imag {
+  display: block;
+  margin: 0 auto;
+}
+
+#background {
+  padding-top: 150px;
+  width: 35%;
+}
+
+/* Setting up side images */
+#img1 {
+  position: absolute;
+  width: 150px;
+  right: 150px;
+  top: 650px;
+  transform: rotate(-45deg);
+}
+
+#img2 {
+  position: absolute;
+  width: 150px;
+  left: 150px;
+  bottom: 600px;
+  transform: rotate(45deg);
+}
+
+#start {
+  width: 10%;
+  padding-bottom: 20px;
+  width: 200px;
+}
+.startButton {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  bottom: 25%;
+}
+
+/* Styling the footer */
+.discord-container {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 150px;
+}
+
+.discord-container img {
+  position: relative;
+  width: 200px;
+}
+
+#pipe {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+}
+
+#sound {
+  position: absolute;
+  bottom: 5px;
+  right: 20px;
+  width: 200px;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.footer p {
+  font-size: 50px;
+}
+
+.socialLinks p {
+  padding: 20px 0 0 50px;
+  margin-right: 100px;
+}
+
+.socialLinks {
+  position: relative;
+  float: left;
+  flex-direction: row-reverse;
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  position: relative;
+  width: 75px;
+  height: 75px;
+}
+
+.socialLinks a {
+  width: 75px;
+  height: 75px;
+  margin-left: 25px;
+}
+
+.follow-us {
+  color: gray;
+}
+
+.t {
+  margin-top: 250px;
+  margin-left: 600px;
+  margin-right: 600px;
+}
+
+.header {
+  font: bold;
+  font-size: 20px;
+}
+
+table.table-bordered {
+  border: 1px solid white;
+}
+
+.avatar {
+  width: 50px;
+}
+
+.medal {
+  width: 20px;
+}
+
+#silver {
+  width: 28px;
+  margin-left: -5px;
+}
+
+.tr {
+  height: 50px;
+}
+
+.star {
+  width: 35px;
+}
+
+.text {
+  position: relative;
+  text-align: center;
+  color: white;
+  font-family: "Comic Sans MS";
+}
+
+.still {
+  width: 200px !important;
+  transform: rotate(360deg) !important;
+}
+
+.birdy {
+  -webkit-transform: scaleX(-1) !important;
+  -moz-transform: scaleX(-1) !important;
+  -o-transform: scaleX(-1) !important;
+  transform: scaleX(-1) !important;
+  width: 250px !important;
+}
+
+.birdyRed {
+  width: 100px !important;
+}
+
+@import url(https://fonts.googleapis.com/css?family=Dancing+Script:400,700);
+* {
+  box-sizing: border-box;
+}
+
+h1 {
+  font-size: 2rem;
+  font-family: "Dancing Script";
+}
+small {
+  display: block;
+  padding: 1rem 0;
+  font-size: 0.8rem;
+  transition: opacity 0.33s;
+}
+textarea,
+input,
+button {
+  line-height: 1.5rem;
+  border: 0;
+  outline: none;
+  font-family: inherit;
+  appearance: none;
+}
+textarea,
+input {
+  color: #4e5e72;
+  background-color: transparent;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='24'><rect fill='rgb(229, 225, 187)' x='0' y='23' width='10' height='1'/></svg>");
+}
+textarea {
+  width: 100%;
+  height: 8rem;
+  resize: none;
+}
+input {
+  width: 50%;
+  margin-bottom: 1rem;
+  &[type="text"]:invalid,
+  [type="email"]:invalid {
+    box-shadow: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='24'><rect fill='rgba(240, 132, 114, 0.5)' x='0' y='23' width='10' height='1'/></svg>");
+  }
+}
+button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  background-color: rgba(78, 94, 114, 0.9);
+  color: white;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+  &:hover,
+  :focus {
+    outline: none;
+    background-color: rgba(78, 94, 114, 1);
+  }
+
+  /* Stylng the envelope */
+}
+input[type="text"]:focus,
+input[type="email"]:focus,
+textarea:focus {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='24'><rect fill='rgba(78, 94, 114, 0.3)' x='0' y='23' width='10' height='1'/></svg>");
+  outline: none;
+}
+.wrapper {
+  margin-top: -50px !important;
+  width: 35rem;
+  background-color: white;
+}
+
+.wrapper h1 {
+  text-align: center;
+  font-family: "Comic Sans MS";
+  color: black;
+}
+
+.letter {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  width: 30rem;
+  margin: auto;
+  perspective: 60rem;
+  margin-top: 250px;
+}
+.side {
+  height: 12rem;
+  background-color: #fcfcf8;
+  outline: 1px solid transparent;
+  &:nth-of-type(1) {
+    padding: 2rem 2rem 0;
+    border-radius: 1rem 1rem 0 0;
+    box-shadow: inset 0 0.75rem 2rem rgba(229, 225, 187, 0.5);
+  }
+  &.side:nth-of-type(2) {
+    padding: 2rem;
+    border-radius: 0 0 1rem 1rem;
+    box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.05),
+      inset 0 -0.57rem 2rem rgba(229, 225, 187, 0.5);
+    text-align: right;
+  }
+}
+.envelope {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  margin: auto;
+  margin-top: 250px !important;
+}
+.envelope.front {
+  width: 10rem;
+  height: 6rem;
+  border-radius: 0 0 1rem 1rem;
+  overflow: hidden;
+  z-index: 9999;
+  opacity: 0;
+}
+.envelope.front::before,
+.envelope.front::after {
+  position: absolute;
+  display: block;
+  width: 12rem;
+  height: 6rem;
+  background-color: #e9dc9d;
+  transform: rotate(30deg);
+  transform-origin: 0 0;
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+  content: "";
+}
+.envelope.front::after {
+  right: 0;
+  transform: rotate(-30deg);
+  transform-origin: 100% 0;
+}
+.envelope.back {
+  top: -4rem;
+  width: 10rem;
+  height: 10rem;
+  overflow: hidden;
+  z-index: -9998;
+  opacity: 0;
+  transform: translateY(-6rem);
+  &::before {
+    display: block;
+    width: 10rem;
+    height: 10rem;
+    background-color: #e9dc9d;
+    border-radius: 1rem;
+    content: "";
+    transform: scaleY(0.6) rotate(45deg);
+  }
+}
+.result-message {
+  opacity: 0;
+  transition: all 0.3s 2s;
+  transform: translateY(9rem);
+  z-index: -9999;
+  text-align: center;
+  font-family: "Comic Sans MS";
+  color: white;
+  font-size: 25px;
+  padding-top: 250px !important;
+}
+.sent {
+  & .letter {
+    animation: scaleLetter 1s forwards ease-in;
+  }
+  & .side:nth-of-type(1) {
+    transform-origin: 0 100%;
+    animation: closeLetter 0.66s forwards ease-in;
+  }
+  & .side:nth-of-type(1) h1,
+  .side:nth-of-type(1) textarea {
+    animation: fadeOutText 0.66s forwards linear;
+  }
+  & button {
+    background-color: rgba(78, 94, 114, 0.2);
+  }
+  & .envelope {
+    animation: fadeInEnvelope 0.5s 1.33s forwards ease-out;
+  }
+  & .result-message {
+    opacity: 1;
+    transform: translateY(12rem);
+  }
+  & small {
+    opacity: 0;
+  }
+}
+.centered {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 1rem auto;
+}
+@keyframes closeLetter {
+  50% {
+    transform: rotateX(-90deg);
+  }
+  100% {
+    transform: rotateX(-180deg);
+  }
+}
+@keyframes fadeOutText {
+  49% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes fadeInEnvelope {
+  0% {
+    opacity: 0;
+    transform: translateY(8rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(4.5rem);
+  }
+}
+@keyframes scaleLetter {
+  66% {
+    transform: translateY(-8rem) scale(0.5, 0.5);
+  }
+  75% {
+    transform: translateY(-8rem) scale(0.5, 0.5);
+  }
+  90% {
+    transform: translateY(-8rem) scale(0.3, 0.5);
+  }
+  97% {
+    transform: translateY(-8rem) scale(0.33, 0.5);
+  }
+  100% {
+    transform: translateY(-8rem) scale(0.3, 0.5);
+  }
+}
+
+textarea {
+  resize: none !important;
+}
+
+.chat {
+  width: 175px !important;
+}
+
+/* Defining bounce animation */
+
+.bounce:not(.topnav-logo):hover {
+  display: inline-block;
+}
+
+.bounce:not(.topnav-logo):hover,
+.topnav-logo {
+  /* Hover styles and animation styles for elements with the "bounce" class, .topnav-logo, and .b1 */
+  display: inline-block; 
+  -moz-animation: bounce 0.5s infinite linear; 
+  -o-animation: bounce 0.5s infinite linear;
+  -webkit-animation: bounce 0.5s infinite linear;
+  animation: bounce 0.5s infinite linear;
+}
+
+@-webkit-keyframes bounce {
+  0% {
+    top: 0;
+  }
+  50% {
+    top: 0.5em;
+  }
+  70% {
+    top: 0.5em;
+  }
+  100% {
+    top: 0;
+  }
+}
+@-moz-keyframes bounce {
+  0% {
+    top: 0;
+  }
+  50% {
+    top: 0.5em;
+  }
+  70% {
+    top: 0.5em;
+  }
+  100% {
+    top: 0;
+  }
+}
+@-o-keyframes bounce {
+  0% {
+    top: 0;
+  }
+  50% {
+    top: 0.5em;
+  }
+  70% {
+    top: 0.5em;
+  }
+  100% {
+    top: 0;
+  }
+}
+@-ms-keyframes bounce {
+  0% {
+    top: 0;
+  }
+  50% {
+    top: 0.5em;
+  }
+  70% {
+    top: 0.5em;
+  }
+  100% {
+    top: 0;
+  }
+}
+@keyframes bounce {
+  0% {
+    top: 0;
+  }
+  50% {
+    top: 0.5em;
+  }
+  70% {
+    top: 0.5em;
+  }
+  100% {
+    top: 0;
+  }
+}
+
+.wings {
+  width: 150px;
+  height: 150px;
+  position: absolute;
+  transform: translateX(-50%);
+  left: 50%;
+}
+
+/* Styling the wings gif */
+.wings.right {
+  margin-left: 210px;
+  margin-top: -10px;
+}
+
+.wings.left {
+  margin-left: -220px;
+  margin-top: -10px;
+}
+
+/* Cloud styling */
+.cloud {
+  background: rgba(255, 255, 255);
+  width: 300px;
+  height: 100px;
+  border-radius: 150px;
+  box-shadow: 10px 10px rgba(0, 0, 0, 0.2);
+  animation: move 3s infinite;
+}
+
+#cloud1 {
+  position: absolute;
+  bottom: 200px;
+  left: 125px;
+}
+
+#cloud2 {
+  position: absolute;
+  top: 200px;
+  right: 125px;
+}
+
+.cloud:after {
+  content: "";
+  background: rgba(255, 255, 255);
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  top: -50px;
+  left: 50px;
+}
+
+.cloud:before {
+  content: "";
+  background: rgba(255, 255, 255);
+  position: absolute;
+  width: 170px;
+  height: 150px;
+  border-radius: 50%;
+  top: -90px;
+  right: 40px;
+}
+
+@keyframes move {
+  0% {
+    transform: translatex(0);
+  }
+  50% {
+    transform: translatex(-40px);
+  }
+}
+
+/* Defining the zoom animation */
+
+.zoom-effect {
+  transition: transform 0.3s !important;
+}
+
+/* Define the hover state */
+.zoom-effect:hover {
+  transform: scale(1.3) !important;
+}
+
+.bird {
+  width: 150px;
+  height: 150px;
+  position: absolute;
+  top: 65%;
+  left: -100px;
+  animation: fly 10s linear infinite;
+  background-repeat: no-repeat;
+  background-image: url("../images/flappyGif.gif");
+  background-size: contain;
+}
+
+/* Defining fly animation */
+@keyframes fly {
+  0% {
+    left: -100px;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.birdy-container1 {
+  position: absolute;
+  top: 250px;
+  left: 100px;
+}
+
+#bird1 {
+  position: relative;
+  width: 120px;
+}
+
+.birdy-container2 {
+  position: absolute;
+  bottom: 200px;
+  right: 100px;
+}
+
+#bird2 {
+  position: relative;
+  width: 250px;
+}
+
+.staticBird {
+  animation: bounce1 2s infinite alternate;
+}
+
+.staticBird:hover {
+  animation: bounce1-faster 0.5s infinite alternate;
+}
+
+/* Defining a bounce faster animation */
+@keyframes bounce1 {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes bounce1-faster {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-20px);
+  }
+}
+
+/* Styling scroll image */
+.scroll {
+  position: absolute;
+  width: 900px;
+  height: 600px;
+  z-index: -1;
+  left: -200px;
+  bottom: -180px;
+}
+
+.pContainer {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 30%;
+  color: white;
+  font-size: 30px;
+}
+
+/* Styling the text bubble */
+.bubble {
+  position: relative;
+  display: inline-block;
+  margin: 20px;
+  text-align: center;
+  font-family: "Press Start 2P", cursive;
+  font-size: 16px;
+  line-height: 1.3em;
+  background-color: #fff;
+  color: #000;
+  padding: 12px;
+  box-shadow: 0 -4px #fff, 0 -8px #000, 4px 0 #fff, 4px -4px #000, 8px 0 #000,
+    0 4px #fff, 0 8px #000, -4px 0 #fff, -4px 4px #000, -8px 0 #000,
+    -4px -4px #000, 4px 4px #000;
+  box-sizing: border-box;
+  width: 200px;
+}
+.bubble::after {
+  content: "";
+  display: block;
+  position: absolute;
+  box-sizing: border-box;
+}
+.bubble.shadow {
+  box-shadow: 0 -4px #fff, 0 -8px #000, 4px 0 #fff, 4px -4px #000, 8px 0 #000,
+    0 4px #fff, 0 8px #000, -4px 0 #fff, -4px 4px #000, -8px 0 #000,
+    -4px -4px #000, 4px 4px #000, 4px 12px rgba(0, 0, 0, 0.1),
+    12px 4px rgba(0, 0, 0, 0.1), 8px 8px rgba(0, 0, 0, 0.1);
+}
+.bubble.mini {
+  width: 110px;
+  font-size: 16px;
+  padding: 4px;
+  font-family: monospace;
+}
+.bubble.medium {
+  width: 350px;
+}
+.bubble.large {
+  width: 560px;
+  font-size: 24px;
+  text-align: left;
+  text-transform: uppercase;
+}
+.bubble.grow {
+  width: initial;
+}
+.bubble.top::after {
+  height: 4px;
+  width: 4px;
+  top: -8px;
+  left: 32px;
+  box-shadow: 0 -4px #000, 0 -8px #000, 0 -12px #000, 0 -16px #000,
+    -4px -12px #000, -8px -8px #000, -12px -4px #000, -4px -4px #fff,
+    -8px -4px #fff, -4px -8px #fff, -4px 0 #fff, -8px 0 #fff, -12px 0 #fff;
+}
+.bubble.right::after {
+  height: 4px;
+  width: 4px;
+  top: 84px;
+  right: -8px;
+  background: white;
+  box-shadow: 4px -4px #fff, 4px 0 #fff, 8px 0 #fff, 0 -8px #fff, 4px 4px #000,
+    8px 4px #000, 12px 4px #000, 16px 4px #000, 12px 0 #000, 8px -4px #000,
+    4px -8px #000, 0 -4px #fff;
+}
+.bubble.bottom::after {
+  height: 4px;
+  width: 4px;
+  bottom: -8px;
+  left: 32px;
+  box-shadow: 0 4px #000, 0 8px #000, 0 12px #000, 0 16px #000, -4px 12px #000,
+    -8px 8px #000, -12px 4px #000, -4px 4px #fff, -8px 4px #fff, -4px 8px #fff,
+    -4px 0 #fff, -8px 0 #fff, -12px 0 #fff;
+}
+.bubble.left::after {
+  height: 4px;
+  width: 4px;
+  top: 20px;
+  left: -8px;
+  background: white;
+  box-shadow: -4px -4px #fff, -4px 0 #fff, -8px 0 #fff, 0 -8px #fff,
+    -4px 4px #000, -8px 4px #000, -12px 4px #000, -16px 4px #000, -12px 0 #000,
+    -8px -4px #000, -4px -8px #000, 0 -4px #fff;
+}
+
+.txtAbout {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 280px;
+  color: black;
+  font-size: 30px;
+}
+
+.flippable-element {
+  width: 220px !important;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  animation: flip 5s infinite;
+  transform-origin: center;
+  transition: transform 0.3s;
+}
+
+@keyframes flip {
+  0% {
+    transform: rotate(-45deg) scale(1);
+  }
+  25% {
+    transform: rotate(0deg) scale(1.3);
+  }
+  50% {
+    transform: rotate(45deg) scale(1);
+  }
+  75% {
+    transform: rotate(0deg) scale(1.3);
+  }
+}
+
+/* Log in */
+*,
+::after,
+::before {
+  box-sizing: border-box;
+}
+
+.form {
+  margin-top: 100px !important;
+  width: 300px;
+  padding: 64px 15px 24px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.href {
+  margin-top: 50px;
+}
+
+.ref {
+  color: white !important;
+  font-family: "Family Sans MS";
+  font-size: 25px;
+}
+
+.form .control {
+  margin: 0 0 24px;
+}
+.form .control input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-family: "Family Sans MS";
+  letter-spacing: 0.05em;
+  font-size: 16px;
+}
+.form .control input:hover,
+.form .control input:focus {
+  outline: none;
+  border: 0;
+}
+.form .btn {
+  width: 100%;
+  display: block;
+  padding: 14px 16px;
+  background: transparent;
+  outline: none;
+  border: 0;
+  color: #fff;
+  letter-spacing: 0.1em;
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 16px;
+}
+
+.form h1 {
+  color: white;
+  text-align: center;
+  font-family: "Comic Sans MS";
+}
+
+.block-cube {
+  position: relative;
+}
+.block-cube .bg-top {
+  position: absolute;
+  height: 10px;
+  background: #020024;
+  background: linear-gradient(
+    90deg,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(52, 9, 121, 1) 37%,
+    rgba(0, 212, 255, 1) 94%
+  );
+  bottom: 100%;
+  left: 5px;
+  right: -5px;
+  transform: skew(-45deg, 0);
+  margin: 0;
+}
+.block-cube .bg-top .bg-inner {
+  bottom: 0;
+}
+.block-cube .bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: #020024;
+  background: linear-gradient(
+    90deg,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(52, 9, 121, 1) 37%,
+    rgba(0, 212, 255, 1) 94%
+  );
+}
+.block-cube .bg-right {
+  position: absolute;
+  background: #020024;
+  background: rgba(0, 212, 255, 1);
+  top: -5px;
+  z-index: 0;
+  bottom: 5px;
+  width: 10px;
+  left: 100%;
+  transform: skew(0, -45deg);
+}
+.block-cube .bg-right .bg-inner {
+  left: 0;
+}
+.block-cube .bg .bg-inner {
+  transition: all 0.2s ease-in-out;
+}
+.block-cube .bg-inner {
+  background: #212121;
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  right: 2px;
+  bottom: 2px;
+}
+.block-cube .text {
+  position: relative;
+  z-index: 2;
+}
+.block-cube.block-input input {
+  position: relative;
+  z-index: 2;
+}
+.block-cube.block-input input:focus ~ .bg-right .bg-inner,
+.block-cube.block-input input:focus ~ .bg-top .bg-inner,
+.block-cube.block-input input:focus ~ .bg-inner .bg-inner {
+  top: 100%;
+  background: rgba(255, 255, 255, 0.5);
+}
+.block-cube.block-input .bg-top,
+.block-cube.block-input .bg-right,
+.block-cube.block-input .bg {
+  background: rgba(255, 255, 255, 0.5);
+  transition: background 0.2s ease-in-out;
+}
+.block-cube.block-input .bg-right .bg-inner,
+.block-cube.block-input .bg-top .bg-inner {
+  transition: all 0.2s ease-in-out;
+}
+.block-cube.block-input:focus .bg-top,
+.block-cube.block-input:hover .bg-top,
+.block-cube.block-input:focus .bg-right,
+.block-cube.block-input:hover .bg-right,
+.block-cube.block-input:focus .bg,
+.block-cube.block-input:hover .bg {
+  background: rgba(255, 255, 255, 0.8);
+}
+.block-cube.block-cube-hover:focus .bg .bg-inner,
+.block-cube.block-cube-hover:hover .bg .bg-inner {
+  top: 100%;
+}
+.credits {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  padding: 15px 15px;
+  width: 100%;
+  z-index: 111;
+}
+.credits a {
+  opacity: 0.6;
+  color: #fff;
+  font-size: 11px;
+  text-decoration: none;
+}
+.credits a:hover {
+  opacity: 1;
+}
+
+.birdWelcome {
+  transform: rotate(0deg) !important;
+  width: 150px !important;
+}
+
+.control h1 {
+  padding-bottom: 25px;
+}
+
+.birdRolling {
+  position: absolute;
+  margin-left: -150px;
+  width: 200px !important;
+}
+
+/* Style for error messages */
+/* Style for error messages */
+.error {
+  display: none;
+  top: -10px  ;
+  height: 50px;
+  width: 250px;
+  position: absolute;
+  left: 300px;
+  color: #ff0000; /* Red text color for errors */
+  background-color: #ffcccc; /* Slightly less red background */
+  font-size: 14px; /* Font size for error messages */
+  margin-top: 5px; /* Add some spacing above the error messages */
+  font-weight: bold; /* Make the error messages bold */
+  border: 1px solid #ff0000; /* Red border around the error messages */
+  padding: 5px; /* Add some padding around the error messages */
+  border-radius: 5px; /* Add rounded corners to the error messages */
+}
+
+
+.far {
+  position: absolute;
+  bottom: 20px;
+  right: 10px;
+  color:white;
+  z-index: 2;
+}
+
+.userError {
+  margin-right: 500px !important;
+  left: 12px;
+  top: 60px;
+  
+}
+
+.createAccount {
+  padding-top: 100px;
+}
+
+.logInError {
+  top: 70px;
+  left: 12px;
+}
+  
+#award {
+  width: 30px;
+  margin-left:-5px ;
+}
+
+
+
+
