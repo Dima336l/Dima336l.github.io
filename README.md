@@ -9,7 +9,7 @@ leaderboard page, contact and about pages, diverse obstacles, dynamic background
 
 ## Features
 
-- 8-Bit Cryptotune Audio
+- 🎵 8-Bit Cryptotune Audio
 - Registration and Login System
 - Leaderboard
 - Contact and About Pages
