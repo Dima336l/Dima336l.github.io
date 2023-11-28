@@ -50,6 +50,7 @@ document.addEventListener("submit", function (event) {
     );
 
     if (user) {
+      localStorage.setItem("loggedInUser", JSON.stringify(user));
       // Successful login, redirecting to home page
       window.location.href = "http://127.0.0.1:5500/index.html";
     } else {
