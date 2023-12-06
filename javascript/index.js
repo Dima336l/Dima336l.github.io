@@ -62,18 +62,3 @@ function isLoggedIn() {
   const loggedInUser = localStorage.getItem("loggedInUser");
   return loggedInUser ? JSON.parse(loggedInUser).email : "";
 }
-
-function updateScore(score) {
-  if (isLoggedIn()) {
-    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    const userIndex = users.findIndex(
-      (user) => user.email === loggedInUser.email
-    );
-    if (userIndex !== -1) {
-      if (users[userIndex].score < score) {
-        users[userIndex].score = score;
-      } 
-      localStorage.setItem("users", JSON.stringify(users));
-    }
-  } 
-}
