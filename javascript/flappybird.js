@@ -14,6 +14,9 @@ class Game {
     this.gradient.addColorStop("0.6", "#000");
     this.gradient.addColorStop("0.9", "#fff");
     this.background = new Image();
+    this.background1 = new Image();
+    this.background2 = new Image();
+    this.background3 = new Image();
     this.heart = new Image();
     this.shield = new Image();
     this.jetpack = new Image();
@@ -22,9 +25,16 @@ class Game {
     this.doublePoints = new Image();
     this.small = new Image();
     this.globe = new Image();
+    this.pipeRow = 0;
+    this.pipeCol = 0;
+    this.imageNum = 0;
+    this.imgArr = [this.background2,this.background1,this.background3];
     this.doublePoints.src = "../images/flappybird images/Score Multiplier.png";
     this.light.src = "../images/flappybird images/Lighting.png";
     this.background.src = "../images/flappybird images/BG.png";
+    this.background1.src = "../images/flappybird images/Background1.png"
+    this.background2.src = "../images/flappybird images/Background2.png"
+    this.background3.src = "../images/flappybird images/Background3.png"
     this.heart.src = "../images/flappybird images/heart.png";
     this.shield.src = "../images/flappybird images/Shield.png";
     this.jetpack.src = "../images/flappybird images/Jetpack.png";
@@ -35,7 +45,7 @@ class Game {
       "heart",
       "doublePoints",
       "lighting",
-      "shield",
+       "shield",
       "small",
       "coin",
       "globe",
@@ -44,13 +54,15 @@ class Game {
     this.powerUpHeight = 500;
     this.powerUpWidth = 500;
     this.speedMultiplier = 0;
+    this.deactivateCollision = false;
     this.isGravityActive = false;
     this.islightingActive = false;
     this.isSmallPowerUpActive = false;
-    this.shieldActive = false;
+    this.isShieldActive = false;
     this.gameStarted = false;
     this.powerUpSpawned = false;
     this.increasedDifficulty = false;
+    this.imageChanged = false;
     this.backgroundConfig = {
       x1: 0,
       x2: canvas.width,
@@ -95,7 +107,7 @@ class Game {
     this.bird.update();
     this.handleScore();
     this.increaseDifficulty();
-    if (!this.shieldActive) {
+    if (!this.deactivateCollision) {
       if (this.obstacle.handleCollision()) {
         if (this.bird.lives === 0) {
           this.updateScore();
@@ -111,7 +123,6 @@ class Game {
     this.hue++;
     this.frame++;
   }
-
 
   increaseDifficulty() {
     if (this.score % 50 === 0 && this.score > 0 && !this.increasedDifficulty) {
@@ -159,21 +170,35 @@ class Game {
       this.backgroundConfig.x2 += this.backgroundConfig.width * 2;
     }
 
+    if (this.score % 10 === 0 && this.score > 0 && !this.imageChanged) {
+      this.imageNum ++;
+      this.imageChanged = true;
+    }
+
+    if (this.score % 10 !== 0) {
+      this.imageChanged = false;
+    }
+
+    if (this.imageNum > 2) {
+      this.imageNum = 0;
+    }
+
     ctx.drawImage(
-      this.background,
+      this.imgArr[this.imageNum],
       this.backgroundConfig.x1,
       this.backgroundConfig.y,
       this.backgroundConfig.width,
       this.backgroundConfig.height
     );
     ctx.drawImage(
-      this.background,
+      this.imgArr[this.imageNum],
       this.backgroundConfig.x2,
       this.backgroundConfig.y,
       this.backgroundConfig.width,
       this.backgroundConfig.height
     );
-  }
+
+}
 
   playSound(sound) {
     if (this.isAudioPlaying) {
@@ -210,7 +235,7 @@ class Game {
       this.offSetX = 0;
       this.offSetY = 0;
     }
-    if (this.shieldActive) {
+    if (this.isShieldActive) {
       ctx.drawImage(
         this.shield,
         this.bird.x - 35 + this.offSetX,
@@ -508,41 +533,58 @@ class Obstacles {
   constructor(game, bird) {
     this.game = game;
     this.bird = bird;
+    this.offScreenCanvas = document.createElement("canvas");
+    this.offScreenCtx = this.offScreenCanvas.getContext("2d");
     this.bottom = (Math.random() * canvas.height) / 3 + 20;
     this.top = canvas.height - this.game.gapSize - this.bottom + 20;
     this.gap = canvas.height - this.bottom - this.top;
     this.x = canvas.width;
-    this.width = 100;
+    this.width = 50;
+    this.offScreenCanvas.width = this.width;
+    this.offScreenCanvas.top = this.top;
     this.color = "hsla(" + this.game.hue + ",100%,50%,1)";
     this.counted = false;
+    this.pipeRow = this.game.pipeRow % 4;
+    this.pipeCol = this.game.pipeCol;
     this.lifeDecreased = false;
     this.obstacleArr = [];
     this.bang = new Image();
     this.pipeTop = new Image();
     this.pipeBottom = new Image();
-    this.pipeTop.src = "../images/flappybird images/PipeTop.png"
-    this.pipeBottom.src ="../images/flappybird images/PipeBottom.png"
+    this.pipeSprite = new Image();
+    this.pipeSprite.src = "../images/flappybird images/PipeSprite.png"
+    this.pipeTop.src = "../images/flappybird images/PipeTop.png";
+    this.pipeBottom.src = "../images/flappybird images/PipeBottom.png";
     this.bang.src = "../images/flappybird images/bang.png";
     this.spawnRate = 0;
     this.spawnRateFactor = 1;
   }
 
   draw() {
-    ctx.drawImage( // Draw Top Pipe
-      this.pipeTop,
-      this.x,
-      0,
-      this.width,
-      this.top
-    );
-    ctx.drawImage( // Draw Top Pipe
-      this.pipeBottom,
-      this.x,
-      canvas.height - this.bottom,
-      this.width,
-      this.bottom
-    );
-  }
+      ctx.drawImage( // Draw Top Pipe
+        this.pipeSprite, 
+        this.pipeRow * 32,
+        this.pipeCol * 80,
+        32,
+        80,
+        this.x,
+        0,
+        this.width,
+        this.top,
+      );
+      ctx.drawImage( // Draw Bottom Pipe
+        this.pipeSprite,
+        this.pipeRow * 32,
+        this.pipeCol * 80,
+        32,
+        80,
+        this.x,
+        canvas.height - this.bottom,
+        this.width,
+        this.bottom
+      );
+    };
+
   update() {
     const movement = this.game.gameSpeed + this.game.speedMultiplier;
     this.x -= movement;
@@ -564,6 +606,13 @@ class Obstacles {
       0
     ) {
       this.obstacleArr.unshift(new Obstacles(this.game, this.bird));
+      this.game.pipeRow++;
+      if(this.game.pipeRow % 4 === 0) {
+        this.game.pipeCol++;
+      }
+      if (this.game.pipeCol > 1) {
+        this.game.pipeCol = 0;
+      }
     }
     for (let i = 0; i < this.obstacleArr.length; i++) {
       this.obstacleArr[i].update(); // Draw the obstacle
@@ -583,10 +632,11 @@ class Obstacles {
             (this.bird.y > canvas.height - this.obstacleArr[i].bottom &&
               this.bird.y + this.bird.height < canvas.height))
         ) {
-          if (!this.lifeDecreased) {
+          if (!this.obstacleArr[i].lifeDecreased) {
             this.game.playSound("../audio/bang.mp3");
             this.bird.lives--;
-            this.lifeDecreased = true;
+            this.obstacleArr[i].lifeDecreased = true;
+            console.log("Life decreased");
           }
           return true;
         }
@@ -675,7 +725,7 @@ class PowerUp {
     if (!this.consumed) {
       ctx.drawImage(
         this.img,
-        this.x + 20,
+        this.x,
         this.y,
         (this.game.powerUpHeight / 10) * this.game.scaleFactor,
         (this.game.powerUpWidth / 10) * this.game.scaleFactor
@@ -718,6 +768,7 @@ class Lighting extends PowerUp {
     super(game, obstacle, bird, imgSrc);
   }
   effect() {
+    this.game.deactivateCollision = true;
     this.game.islightingActive = true;
     this.game.speedMultiplier = 5;
 
@@ -740,6 +791,7 @@ class Lighting extends PowerUp {
         // Reset the position when the effect duration is over
         this.game.speedMultiplier = 0;
         this.game.islightingActive = false;
+        this.game.deactivateCollision = false;
       }
     };
 
@@ -753,9 +805,11 @@ class Shield extends PowerUp {
     super(game, obstacle, bird, imgSrc);
   }
   effect() {
-    this.game.shieldActive = true;
+    this.game.isShieldActive = true;
+    this.game.deactivateCollision = true;
     setTimeout(() => {
-      this.game.shieldActive = false;
+      this.game.isShieldActive = false;
+      this.game.deactivateCollision = false;
     }, 5000);
   }
 }
