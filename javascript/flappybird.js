@@ -22,8 +22,6 @@ class Game {
     this.doublePoints = new Image();
     this.small = new Image();
     this.globe = new Image();
-    this.pipe = new Image();
-    this.pipe.src = "../images/flappybird images/Pipe.png"
     this.doublePoints.src = "../images/flappybird images/Score Multiplier.png";
     this.light.src = "../images/flappybird images/Lighting.png";
     this.background.src = "../images/flappybird images/BG.png";
@@ -34,13 +32,13 @@ class Game {
     this.small.src = "../images/flappybird images/Small.png";
     this.globe.src = "../images/flappybird images/Globe.png";
     this.powerUpTypes = [
-      //"heart",
-      //"doublePoints",
+      "heart",
+      "doublePoints",
       "lighting",
-      //"shield",
-      //"small",
-      //"coin",
-      //"globe",
+      "shield",
+      "small",
+      "coin",
+      "globe",
     ];
     this.gapSize = 250;
     this.powerUpHeight = 500;
@@ -49,7 +47,7 @@ class Game {
     this.isGravityActive = false;
     this.islightingActive = false;
     this.isSmallPowerUpActive = false;
-    this.shieldActive = true;
+    this.shieldActive = false;
     this.gameStarted = false;
     this.powerUpSpawned = false;
     this.increasedDifficulty = false;
@@ -121,6 +119,7 @@ class Game {
         this.obstacle.spawnRateFactor -= 0.25;
         if (this.gapSize > 150) this.gapSize -= 50;
         this.increasedDifficulty = true;
+        console.log(this.gapSize);
       }
     }
     if (this.score % 50 !== 0) {
@@ -510,7 +509,7 @@ class Obstacles {
     this.game = game;
     this.bird = bird;
     this.bottom = (Math.random() * canvas.height) / 3 + 20;
-    this.top = canvas.height - this.game.gapSize - this.bottom;
+    this.top = canvas.height - this.game.gapSize - this.bottom + 20;
     this.gap = canvas.height - this.bottom - this.top;
     this.x = canvas.width;
     this.width = 100;
@@ -543,20 +542,6 @@ class Obstacles {
       this.width,
       this.bottom
     );
-    // ctx.drawImage( // Draw Bottom Pipe
-    //   this.pipe,
-    //   canvas.width,
-    //   this.initY,
-    //   this.imageWidth,
-    //   this.imageHeight,
-    //   this.x - 50 + this.offSetX,
-    //   this.y - 40 + this.offSetY,
-    //   this.imageWidth / this.ratio,
-    //   this.imageHeight / this.ratio
-    // );
-    // ctx.fillStyle = this.color;
-    // ctx.fillRect(this.x, 0, this.width, this.top);
-    // ctx.fillRect(this.x, canvas.height - this.bottom, this.width, this.bottom);
   }
   update() {
     const movement = this.game.gameSpeed + this.game.speedMultiplier;
@@ -684,16 +669,13 @@ class PowerUp {
         this.obstacle.obstacleArr[0].top) /
         2 +
       this.obstacle.obstacleArr[0].top;
-
-    //canvas.height - this.obstacle.obstacleArr[0].bottom - this.game.heartWidth/10; - bottom
-    //this.obstacle.obstacleArr[0].top - top
   }
 
   draw() {
     if (!this.consumed) {
       ctx.drawImage(
         this.img,
-        this.x - 10,
+        this.x + 20,
         this.y,
         (this.game.powerUpHeight / 10) * this.game.scaleFactor,
         (this.game.powerUpWidth / 10) * this.game.scaleFactor
