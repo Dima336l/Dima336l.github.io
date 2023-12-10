@@ -14,18 +14,45 @@ class Game {
     this.gradient.addColorStop("0.6", "#000");
     this.gradient.addColorStop("0.9", "#fff");
     this.background = new Image();
-    this.background.src = "../images/flappybird images/BG.png";
     this.heart = new Image();
-    this.heart.src = "../images/flappybird images/heart.png";
     this.shield = new Image();
+    this.jetpack = new Image();
+    this.coin = new Image();
+    this.light = new Image();
+    this.doublePoints = new Image();
+    this.small = new Image();
+    this.globe = new Image();
+    this.pipe = new Image();
+    this.pipe.src = "../images/flappybird images/Pipe.png"
+    this.doublePoints.src = "../images/flappybird images/Score Multiplier.png";
+    this.light.src = "../images/flappybird images/Lighting.png";
+    this.background.src = "../images/flappybird images/BG.png";
+    this.heart.src = "../images/flappybird images/heart.png";
     this.shield.src = "../images/flappybird images/Shield.png";
-    this.powerUpTypes = ["small"];
-    this.heartHeight = 500;
-    this.heartWidth = 500;
+    this.jetpack.src = "../images/flappybird images/Jetpack.png";
+    this.coin.src = "../images/flappybird images/Coin.png";
+    this.small.src = "../images/flappybird images/Small.png";
+    this.globe.src = "../images/flappybird images/Globe.png";
+    this.powerUpTypes = [
+      //"heart",
+      //"doublePoints",
+      "lighting",
+      //"shield",
+      //"small",
+      //"coin",
+      //"globe",
+    ];
+    this.gapSize = 250;
+    this.powerUpHeight = 500;
+    this.powerUpWidth = 500;
     this.speedMultiplier = 0;
-    this.lightingActive = false;
-    this.shieldActive = false;
+    this.isGravityActive = false;
+    this.islightingActive = false;
     this.isSmallPowerUpActive = false;
+    this.shieldActive = true;
+    this.gameStarted = false;
+    this.powerUpSpawned = false;
+    this.increasedDifficulty = false;
     this.backgroundConfig = {
       x1: 0,
       x2: canvas.width,
@@ -34,18 +61,27 @@ class Game {
       height: canvas.height,
     };
     this.isAudioPlaying = false;
+    this.spaceKeyPressed = false;
+    this.gameOver = false;
+    this.coinShifted = false;
     this.score = 0;
     this.angle = 0;
     this.gameSpeed = 2;
-    this.spaceKeyPressed = false;
     this.frame = 0;
     this.hue = 0;
     this.scoreBonus = 0;
+    this.scaleDown = 4.5;
+    this.scaleFactor = 1;
+    this.jetpackScaleDown = 4;
+    this.offSetX = 0;
+    this.offSetY = 0;
+    this.offSetXJetpack = 0;
+    this.offSetYJetpack = 0;
+    this.powerUp = null;
     this.obstacle = new Obstacles(this, this.bird);
     this.particle = new Particle(this, this.bird);
-    this.coin = new Coin(this,this.obstacle);
     this.powerUp = null;
-    this.imgSrc;
+    this.coinArr = [];
     this.gameLoop();
   }
 
@@ -56,14 +92,17 @@ class Game {
     this.obstacle.handleObstacles();
     this.drawLives();
     this.handlePowerUp();
-    this.bird.update();
     this.drawShield();
-    this.coin.hanldeCoin();
+    this.drawJetpack();
+    this.bird.update();
     this.handleScore();
+    this.increaseDifficulty();
     if (!this.shieldActive) {
       if (this.obstacle.handleCollision()) {
         if (this.bird.lives === 0) {
           this.updateScore();
+          this.gameOver = true;
+          this.restartGame();
         }
         return;
       }
@@ -75,15 +114,27 @@ class Game {
     this.frame++;
   }
 
-  drawShield() {
-    if (this.shieldActive) {
-      ctx.drawImage(
-        this.shield,
-        this.bird.x - 25,
-        this.bird.y - 30,
-        472 / 5,
-        472 / 5
-      );
+
+  increaseDifficulty() {
+    if (this.score % 50 === 0 && this.score > 0 && !this.increasedDifficulty) {
+      if (this.obstacle.spawnRate > 50) {
+        this.obstacle.spawnRateFactor -= 0.25;
+        if (this.gapSize > 150) this.gapSize -= 50;
+        this.increasedDifficulty = true;
+      }
+    }
+    if (this.score % 50 !== 0) {
+      this.increasedDifficulty = false;
+    }
+  }
+
+  restartGame() {
+    if (this.gameOver) {
+      this.score = 0;
+      this.obstacle.obstacleArr = [];
+      this.particle.particleArr = [];
+      this.frame = 0;
+      this.bird.lives = 3;
     }
   }
 
@@ -144,8 +195,46 @@ class Game {
         this.heart,
         50 * i,
         0,
-        this.heartHeight / 10,
-        this.heartHeight / 10
+        this.powerUpHeight / 10,
+        this.powerUpWidth / 10
+      );
+    }
+  }
+
+  drawShield() {
+    if (this.isSmallPowerUpActive) {
+      this.scaleDown = 9;
+      this.offSetX = 28;
+      this.offSetY = 12;
+    } else {
+      this.scaleDown = 4.5;
+      this.offSetX = 0;
+      this.offSetY = 0;
+    }
+    if (this.shieldActive) {
+      ctx.drawImage(
+        this.shield,
+        this.bird.x - 35 + this.offSetX,
+        this.bird.y - 35 + this.offSetY,
+        472 / this.scaleDown,
+        472 / this.scaleDown
+      );
+    }
+  }
+
+  drawJetpack() {
+    if (this.islightingActive) {
+      if (this.isSmallPowerUpActive) {
+        this.jetpackScaleDown = 9;
+        this.offSetXJetpack = 60;
+        this.offSetYJetpack = 20;
+      }
+      ctx.drawImage(
+        this.jetpack,
+        this.bird.x - 80 + this.offSetXJetpack,
+        this.bird.y - 45 + this.offSetYJetpack,
+        472 / this.jetpackScaleDown,
+        472 / this.jetpackScaleDown
       );
     }
   }
@@ -170,14 +259,21 @@ class Game {
       }
     }
   }
+
   handlePowerUp() {
     this.spawnPowerUp();
     if (this.powerUp !== null) {
+      if (this.powerUp instanceof Globe) {
+        this.scaleFactor = 1.5;
+      } else {
+        this.scaleFactor = 1;
+      }
       this.updatePowerUp();
       this.drawPowerUp();
       this.consumePowerUp();
     }
   }
+
   updatePowerUp() {
     this.powerUp.update();
   }
@@ -189,17 +285,23 @@ class Game {
   consumePowerUp() {
     {
       const birdInRange =
-        this.bird.x > this.powerUp.x &&
-        this.bird.x < this.powerUp.x + this.heartWidth / 10 &&
-        this.bird.y < this.powerUp.y &&
+        this.bird.x > this.powerUp.x * this.scaleFactor &&
+        this.bird.x <
+          this.powerUp.x + (this.powerUpWidth / 10) * this.scaleFactor &&
+        this.bird.y < this.powerUp.y * this.scaleFactor &&
         this.bird.y >
-          this.powerUp.y - this.powerUp.canvasRect.top + this.heartHeight / 10;
+          this.powerUp.y -
+            this.powerUp.canvasRect.top +
+            (this.powerUpHeight / 10) * this.scaleFactor;
       if (birdInRange) {
         if (!this.powerUp.consumed) {
           this.powerUp.effect();
           this.resetPowerUp();
         }
-      } else if (this.powerUp.x + this.heartWidth / 10 < 0) {
+      } else if (
+        this.powerUp.x + (this.powerUpWidth / 10) * this.scaleFactor <
+        0
+      ) {
         this.resetPowerUp();
       }
     }
@@ -211,65 +313,84 @@ class Game {
   }
 
   spawnPowerUp() {
-    if (this.score % 2 === 0 && this.score > 0 && this.powerUp === null) {
+    if (
+      this.frame % (this.obstacle.spawnRate * 4) === 0 &&
+      this.powerUp === null
+    ) {
+      this.powerUpSpawned = true;
       const randomPowerUpIndex = Math.floor(
         Math.random() * this.powerUpTypes.length
       );
       const randomPowerUp = this.powerUpTypes[randomPowerUpIndex];
-
       switch (randomPowerUp) {
         case "heart": {
-          this.imgSrc = "../images/flappybird images/heart.png";
           this.powerUp = new HeartPowerUp(
             this,
             this.obstacle,
             this.bird,
-            this.imgSrc
+            this.heart.src
           );
           break;
         }
         case "doublePoints": {
-          this.imgSrc = "../images/flappybird images/Score Multiplier.png";
           this.powerUp = new DoublePoints(
             this,
             this.obstacle,
             this.bird,
-            this.imgSrc
+            this.doublePoints.src
           );
           break;
         }
         case "lighting": {
-          this.imgSrc = "../images/flappybird images/Lighting.png";
           this.powerUp = new Lighting(
             this,
             this.obstacle,
             this.bird,
-            this.imgSrc
+            this.light.src
           );
           break;
         }
         case "shield": {
-          this.imgSrc = "../images/flappybird images/Shield.png";
           this.powerUp = new Shield(
             this,
             this.obstacle,
             this.bird,
-            this.imgSrc
+            this.shield.src
           );
           break;
         }
         case "small": {
-          this.imgSrc = "../images/flappybird images/Small.png";
           this.powerUp = new Small(
             this,
             this.obstacle,
             this.bird,
-            this.imgSrc
+            this.small.src
           );
+          break;
+        }
+        case "coin": {
+          this.powerUp = new Coin(
+            this,
+            this.obstacle,
+            this.bird,
+            this.coin.src
+          );
+          break;
+        }
+        case "globe": {
+          this.powerUp = new Globe(
+            this,
+            this.obstacle,
+            this.bird,
+            this.globe.src
+          );
+          break;
         }
       }
-      this.powerUp.x = canvas.width;
-      this.powerUp.consumed = false;
+      if (this.powerUp) {
+        this.powerUp.x = canvas.width;
+        this.powerUp.consumed = false;
+      }
     }
   }
 }
@@ -319,14 +440,18 @@ class Bird {
       this.y = canvas.height - this.height * 5 - curve;
     }
 
-    if (this.y < 0 + this.height) {
+    if (this.y < 0 + this.height * 5 - curve) {
       // Make sure bird doesn't go above canvas
-      this.y = 0 + this.height;
+      this.y = 0 + this.height * 5 - curve;
     }
 
     if (this.y <= canvas.height - this.height - curve) {
       // If bird within boundaries
-      this.velocity += this.weight; // Gravity simulation
+      if (this.game.isGravityActive) {
+        this.velocity -= this.weight;
+      } else {
+        this.velocity += this.weight;
+      } // Gravity simulation
       this.velocity *= 0.8; // Damping effect
       this.x += this.game.speedMultiplier;
       this.y += this.velocity;
@@ -344,7 +469,6 @@ class Bird {
       this.ratio = 4;
       this.offSetX = 0;
       this.offSetY = 0;
-      
     }
     ctx.drawImage(
       this.character,
@@ -363,7 +487,12 @@ class Bird {
   flap() {
     const currentTime = Date.now();
     this.game.spaceKeyPressed = true;
-    this.velocity -= 30;
+    if (this.game.isGravityActive) {
+      this.velocity += 30;
+    } else {
+      this.velocity -= 30;
+    }
+
     this.flappAllowed = false; // State handling
     this.lastFlapTime = currentTime;
 
@@ -380,22 +509,54 @@ class Obstacles {
   constructor(game, bird) {
     this.game = game;
     this.bird = bird;
-    this.top = (Math.random() * canvas.height) / 3 + 20;
     this.bottom = (Math.random() * canvas.height) / 3 + 20;
+    this.top = canvas.height - this.game.gapSize - this.bottom;
+    this.gap = canvas.height - this.bottom - this.top;
     this.x = canvas.width;
-    this.width = 20;
+    this.width = 100;
     this.color = "hsla(" + this.game.hue + ",100%,50%,1)";
     this.counted = false;
     this.lifeDecreased = false;
     this.obstacleArr = [];
     this.bang = new Image();
+    this.pipeTop = new Image();
+    this.pipeBottom = new Image();
+    this.pipeTop.src = "../images/flappybird images/PipeTop.png"
+    this.pipeBottom.src ="../images/flappybird images/PipeBottom.png"
     this.bang.src = "../images/flappybird images/bang.png";
     this.spawnRate = 0;
+    this.spawnRateFactor = 1;
   }
+
   draw() {
-    ctx.fillStyle = this.color;
-    ctx.fillRect(this.x, 0, this.width, this.top);
-    ctx.fillRect(this.x, canvas.height - this.bottom, this.width, this.bottom);
+    ctx.drawImage( // Draw Top Pipe
+      this.pipeTop,
+      this.x,
+      0,
+      this.width,
+      this.top
+    );
+    ctx.drawImage( // Draw Top Pipe
+      this.pipeBottom,
+      this.x,
+      canvas.height - this.bottom,
+      this.width,
+      this.bottom
+    );
+    // ctx.drawImage( // Draw Bottom Pipe
+    //   this.pipe,
+    //   canvas.width,
+    //   this.initY,
+    //   this.imageWidth,
+    //   this.imageHeight,
+    //   this.x - 50 + this.offSetX,
+    //   this.y - 40 + this.offSetY,
+    //   this.imageWidth / this.ratio,
+    //   this.imageHeight / this.ratio
+    // );
+    // ctx.fillStyle = this.color;
+    // ctx.fillRect(this.x, 0, this.width, this.top);
+    // ctx.fillRect(this.x, canvas.height - this.bottom, this.width, this.bottom);
   }
   update() {
     const movement = this.game.gameSpeed + this.game.speedMultiplier;
@@ -410,20 +571,20 @@ class Obstacles {
   }
   handleObstacles() {
     this.x -= this.game.gameSpeed;
-    if (!this.game.lightingActive) {
-      this.spawnRate = 150;
-    } else {
-      this.spawnRate = 50;
-    }
-    if (this.game.frame % this.spawnRate === 0) {
-      // Spawn obstacle every 150 frame
+    this.spawnRate = 200 * this.spawnRateFactor;
+
+    if (
+      this.game.frame %
+        (this.spawnRate / (this.game.islightingActive ? 5 : 1)) ===
+      0
+    ) {
       this.obstacleArr.unshift(new Obstacles(this.game, this.bird));
     }
     for (let i = 0; i < this.obstacleArr.length; i++) {
       this.obstacleArr[i].update(); // Draw the obstacle
     }
     if (this.obstacleArr.length > 20) {
-      this.obstacleArr.pop(this.obstacleArr[0]); // Pop from array so no memory overload
+      this.obstacleArr.pop(); // Pop from array so no memory overload
     }
   }
   detectCollision() {
@@ -515,30 +676,33 @@ class PowerUp {
     this.x = canvas.width;
     this.powerUp = null;
     this.consumed = false;
-    this.y = (this.obstacle.top + canvas.height - this.obstacle.bottom) / 2;
     this.canvasRect = canvas.getBoundingClientRect();
+    this.y =
+      (canvas.height -
+        this.obstacle.obstacleArr[0].bottom -
+        this.game.powerUpWidth / 10 -
+        this.obstacle.obstacleArr[0].top) /
+        2 +
+      this.obstacle.obstacleArr[0].top;
+
+    //canvas.height - this.obstacle.obstacleArr[0].bottom - this.game.heartWidth/10; - bottom
+    //this.obstacle.obstacleArr[0].top - top
   }
 
   draw() {
     if (!this.consumed) {
       ctx.drawImage(
         this.img,
-        this.x,
-        this.y - 20,
-        this.game.heartHeight / 10,
-        this.game.heartWidth / 10
+        this.x - 10,
+        this.y,
+        (this.game.powerUpHeight / 10) * this.game.scaleFactor,
+        (this.game.powerUpWidth / 10) * this.game.scaleFactor
       );
     }
   }
 
   update() {
     this.x -= this.game.gameSpeed + this.game.speedMultiplier;
-  }
-
-  resetPowerUp() {
-    console.log("reset triggered");
-    this.powerUp = null;
-    this.consumed = true;
   }
 
   effect() {}
@@ -572,7 +736,7 @@ class Lighting extends PowerUp {
     super(game, obstacle, bird, imgSrc);
   }
   effect() {
-    this.game.lightingActive = true;
+    this.game.islightingActive = true;
     this.game.speedMultiplier = 5;
 
     // Store the initial position of the bird before the power-up
@@ -593,7 +757,7 @@ class Lighting extends PowerUp {
       } else {
         // Reset the position when the effect duration is over
         this.game.speedMultiplier = 0;
-        this.game.lightingActive = false;
+        this.game.islightingActive = false;
       }
     };
 
@@ -626,35 +790,24 @@ class Small extends PowerUp {
   }
 }
 
-class Coin {
-  constructor(game,obstacle) {
-    this.game = game;
-    this.obstacle = obstacle;
-    this.img = new Image();
-    this.img.src = "../images/flappybird images/Coin.png";
-    this.x = canvas.width;
-    this.imageHeight = 360;
-    this.imageWidth = 315;
-    this.y = 50;
+class Coin extends PowerUp {
+  constructor(game, obstacle, bird, imgSrc) {
+    super(game, obstacle, bird, imgSrc);
   }
-
-  draw() {
-    ctx.drawImage(
-      this.img,
-      this.x,
-      this.y,
-      this.imageWidth / 10,
-      this.imageHeight / 10
-    );
+  effect() {
+    this.game.score += 5;
   }
+}
 
-  update() {
-    this.x-=this.game.gameSpeed + this.game.speedMultiplier;
+class Globe extends PowerUp {
+  constructor(game, obstacle, bird, imgSrc) {
+    super(game, obstacle, bird, imgSrc);
   }
-
-  hanldeCoin() {
-    this.draw();
-    this.update();
+  effect() {
+    this.game.isGravityActive = true;
+    setTimeout(() => {
+      this.game.isGravityActive = false;
+    }, 5000);
   }
 }
 
