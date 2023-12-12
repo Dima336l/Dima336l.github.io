@@ -31,18 +31,26 @@ class Game {
     this.logo = new Image();
     this.space = new Image();
     this.tap = new Image();
-    this.logoWidth = 200;
+    this.panelScore = new Image();
+    this.goldMedal = new Image();
+    this.silverMedal = new Image();
+    this.bronzeMedal = new Image();
     this.logoHeight = 50;
-    this.spaceWidth = 100;
     this.spaceHeight = 100;
     this.flameWidth = 316;
     this.flameHeight = 98.75;
     this.tapWidth = 500;
     this.tapHeight = 500;
+    this.logoWidth = 200;
+    this.spaceWidth = 100;
     this.pipeRow = 0;
     this.pipeCol = 0;
     this.imageNum = 0;
     this.imgArr = [this.background2, this.background1, this.background3];
+    this.goldMedal.src = "../images/flappybird images/medal_gold.png";
+    this.silverMedal.src = "../images/flappybird images/medal_silver.png";
+    this.bronzeMedal.src = "../images/flappybird images/medal_bronze.png";
+    this.panelScore.src = "../images/flappybird images/panel_score.png";
     this.tap.src = "../images/flappybird images/Tap.png";
     this.logo.src = "../images/flappybird images/Logo.png";
     this.space.src = "../images/flappybird images/Space.png";
@@ -72,6 +80,7 @@ class Game {
     this.powerUpHeight = 500;
     this.powerUpWidth = 500;
     this.speedMultiplier = 0;
+    this.tempDefined = false;
     this.deactivateCollision = false;
     this.isGravityActive = false;
     this.islightingActive = false;
@@ -81,6 +90,7 @@ class Game {
     this.powerUpSpawned = false;
     this.increasedDifficulty = false;
     this.imageChanged = false;
+    this.gameRestarted = false;
     this.backgroundConfig = {
       x1: 0,
       x2: canvas.width,
@@ -92,9 +102,10 @@ class Game {
     this.spaceKeyPressed = false;
     this.gameOver = false;
     this.coinShifted = false;
-    this.gameOverDrawn = false;
+    this.scoreReduced = false;
     this.heightMultiplier = 1;
-    this.score = 10;
+    this.scoreWidth = 24;
+    this.score = 0;
     this.angle = 0;
     this.gameSpeed = 2;
     this.frame = 0;
@@ -109,6 +120,9 @@ class Game {
     this.offSetXJetpack = 0;
     this.offSetYJetpack = 0;
     this.spriteFrame = 0;
+    this.wasDrawn = false;
+    this.scoreWidthDeduced = false;
+    this.scoreWidthSubstracted = false;
     this.powerUp = null;
     this.obstacle = new Obstacles(this, this.bird);
     this.particle = new Particle(this, this.bird);
@@ -119,40 +133,129 @@ class Game {
 
   // Main game function
   gameLoop() {
-      requestAnimationFrame(() => this.gameLoop());
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      if (!this.gameStarted) {
-        this.handleBackground();
-        this.drawMenu();
-      } else {
-        this.handleBackground();
-        this.particle.handleParticles();
-        this.obstacle.handleObstacles();
-        this.drawLives();
-        this.handlePowerUp();
-        this.drawShield();
-        this.drawRocket();
-        this.bird.update();
-        this.bird.draw();
-        this.handleScore();
-        this.increaseDifficulty();
-        this.obstacle.handleCollision();
-        if (this.gameOver) {
-          if (!this.gameOverDrawn) {
-            console.log("Drawing");
-            this.gameOverDrawn = true;
-          }
-        this.obstacle.drawGameOver(); 
-      }
+    requestAnimationFrame(() => this.gameLoop());
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (!this.gameStarted) {
+      this.handleBackground();
+      this.drawMenu();
+    } else if (!this.gameOver) {
+      this.handleBackground();
+      this.particle.handleParticles();
+      this.obstacle.handleObstacles();
+      this.drawLives();
+      this.handlePowerUp();
+      this.drawShield();
+      this.drawRocket();
+      this.bird.update();
+      this.bird.draw();
+      this.handleScore();
+      this.increaseDifficulty();
+      this.obstacle.handleCollision();
+    } else if (this.gameOver) {
+      this.drawGameOver();
     }
+    this.restartGame();
     this.angle += 0.12;
     this.hue++;
     this.frame++;
   }
 
+  drawGameOver() {
+    let digitsScore = this.obstacle.getDigitArray(this.score);
+    if (!this.tempDefined) {
+    this.temp = this.score;
+    this.tempDefined = true;
+  }
+  if (this.score > this.temp) {
+    this.temp = this.score;
+  }
+  console.log(this.temp);
+    let tempScore = this.obstacle.getDigitArray(this.temp);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    this.handleBackground();
+    this.obstacle.handleObstacles();
+    ctx.drawImage(
+      this.obstacle.gameOver,
+      canvas.width / 2 - 192 / 2,
+      canvas.height / 2 - 42 / 2 - 130,
+      192,
+      42
+    );
+    this.printTable();
+    ctx.drawImage(this.obstacle.bang, this.bird.x, this.bird.finalyY, 100, 100);
+    this.printScore(digitsScore);
+    this.printScoreMax(tempScore);
+    ctx.drawImage(
+      this.space,
+      this.xForSpace,
+      110,
+      this.spaceWidth * 3.1,
+      this.spaceHeight * 3.1
+    );
+
+    ctx.drawImage(
+      this.tap,
+      this.xForSpace + 125,
+      295,
+      this.tapWidth / 8,
+      this.tapHeight / 8
+    );
+    this.bird.drawSleeping();
+  }
+
+  printScoreMax(digits) {
+    for (let i = 0; i <= digits.length - 1; i++) {
+      ctx.drawImage(
+        this.obstacle.scoreImgArr[digits[i]],
+        390 + 24 / 2 + 15 - (24 / 2) * i,
+        175 ,
+        24 / 2,
+        36 / 2
+      );
+    }
+  }
+
+  printScore(digits) {
+    for (let i = 0; i <= digits.length - 1; i++) {
+      ctx.drawImage(
+        this.obstacle.scoreImgArr[digits[i]],
+        390 + 24 / 2 + 15 - (24 / 2) * i,
+        140,
+        24 / 2,
+        36 / 2
+      );
+    }
+  }
+
+  printTable() {
+    ctx.drawImage(
+      this.panelScore,
+      canvas.width / 2 - (113 * 1.7) / 2,
+      canvas.height / 2 - (57 * 1.7) / 2 - 40,
+      113 * 1.7,
+      57 * 1.7
+    );
+    this.drawMedal();
+  }
+
+  determineMedal() {
+    if (this.score > 10) {
+      this.medalImg = this.goldMedal;
+    } else if (this.score > 5) {
+      this.medalImg = this.silverMedal;
+    } else {
+      this.medalImg = this.bronzeMedal;
+    }
+    return this.medalImg;
+  }
+
+  drawMedal() {
+    ctx.drawImage(this.determineMedal(), 278, 148, 22 * 1.6, 22 * 1.6);
+  }
+
   drawMenu() {
     this.xForLogo = canvas.width / 2 - this.logoWidth / 2;
-    this.xForSpace = canvas.width / 2 - (this.spaceWidth * 3) / 2 - 5;
+    this.xForSpace = canvas.width / 2 - (this.spaceWidth * 3) / 2;
     ctx.drawImage(
       this.logo,
       this.xForLogo,
@@ -162,7 +265,7 @@ class Game {
     );
     ctx.drawImage(
       this.space,
-      this.xForSpace,
+      this.xForSpace - 5,
       140,
       this.spaceWidth * 3.1,
       this.spaceHeight * 3.1
@@ -170,7 +273,7 @@ class Game {
 
     ctx.drawImage(
       this.tap,
-      this.xForSpace + 125,
+      this.xForSpace + 125 - 5,
       325,
       this.tapWidth / 8,
       this.tapHeight / 8
@@ -182,24 +285,33 @@ class Game {
   }
 
   increaseDifficulty() {
-    if (this.score % 50 === 0 && this.score > 0 && !this.increasedDifficulty) {
+    if (this.score % 2 === 0 && this.score > 0 && !this.increasedDifficulty) {
       if (this.obstacle.spawnRate > 50) {
         this.obstacle.spawnRateFactor -= 0.25;
         if (this.gapSize > 150) this.gapSize -= 20;
         this.increasedDifficulty = true;
       }
     }
-    if (this.score % 50 !== 0) {
+    if (this.score % 2 !== 0) {
       this.increasedDifficulty = false;
     }
   }
 
   restartGame() {
+    if (this.gameRestarted) {
+      this.gameOver = false;
       this.score = 0;
       this.obstacle.obstacleArr = [];
       this.particle.particleArr = [];
+      this.powerUp = null;
       this.frame = 0;
-      this.bird.lives = 3;
+      this.bird.lives = 1;
+      this.gameRestarted = false;
+      this.bird.x = 100;
+      this.bird.y = 200;
+      this.obstacle.spawnRateFactor = 1;
+      this.gapSize = 250;
+    }
   }
 
   handleGameOver() {
@@ -512,6 +624,7 @@ class Bird {
     this.game = game;
     this.initX = 0;
     this.initY = 0;
+    this.finalyY = 0;
     this.x = 100;
     this.y = 200;
     this.velocity = 0;
@@ -526,6 +639,7 @@ class Bird {
     this.lives = 1;
     this.frameX = 0;
     this.frameXidle = 5;
+    this.frameXSleeping = 6;
     this.offSetX = 0;
     this.offSetY = 0;
     this.curve = 0;
@@ -537,7 +651,9 @@ class Bird {
       if (e.code === "Space" && this.flappAllowed) {
         this.game.gameStarted = true;
         this.flap();
-        this.game.gameOver = false;
+        if (this.game.gameOver) {
+          this.game.gameRestarted = true;
+        }
       }
     });
 
@@ -557,7 +673,6 @@ class Bird {
         this.frameXidle = 5;
       }
     }
-
     this.curve = Math.sin(this.game.angle) * 20; // Used to generate a slight upwards and downwards movement when static similar to flapping
     if (this.y > canvas.height - this.height * 2 - this.curve) {
       // Make sure bird doesn't fall below canvas
@@ -617,6 +732,26 @@ class Bird {
     );
   }
 
+  drawSleeping() {
+    if (this.game.frame % 20 === 0) {
+      this.frameXSleeping = (this.frameXSleeping + 1) % 9;
+      if (this.frameXSleeping === 8) {
+        this.frameXSleeping = 6;
+      }
+    }
+    ctx.drawImage(
+      this.character,
+      this.imageWidth * this.frameXSleeping,
+      0,
+      this.imageWidth,
+      this.imageHeight,
+      this.xForBird + 140,
+      this.yForBird,
+      this.width * this.ratio * 0.9,
+      this.height * this.ratio * 0.9
+    );
+  }
+
   drawIdle() {
     this.xForBird = canvas.width / 2 - this.imageWidth / 2 - 80;
     this.yForBird = canvas.height / 2 - this.imageHeight / 2 + 40;
@@ -663,7 +798,6 @@ class Obstacles {
     this.gap = canvas.height - this.bottom - this.top;
     this.x = canvas.width;
     this.width = 50;
-    this.scoreWidth = 24;
     this.offsetXdigits = 0;
     this.color = "hsla(" + this.game.hue + ",100%,50%,1)";
     this.counted = false;
@@ -684,14 +818,6 @@ class Obstacles {
     this.seven = new Image();
     this.eight = new Image();
     this.nine = new Image();
-    this.panelScore = new Image();
-    this.goldMedal = new Image();
-    this.silverMedal = new Image();
-    this.bronzeMedal = new Image();
-    this.panelScore.src = "../images/flappybird images/panel_score.png";
-    this.goldMedal.src = "../images/flappybird images/medal_gold.png";
-    this.silverMedal.src = "../images/flappybird images/medal_silver.png";
-    this.bronzeMedal.src = "../images/flappybird images/medal_bronze.png";
     this.zero.src = "../images/flappybird images/0.png";
     this.one.src = "../images/flappybird images/1.png";
     this.two.src = "../images/flappybird images/2.png";
@@ -750,7 +876,10 @@ class Obstacles {
 
   update() {
     const movement = this.game.gameSpeed + this.game.speedMultiplier;
-    this.x -= movement;
+    if (!this.game.gameOver) {
+      this.x -= movement;
+    }
+
     if (!this.counted && this.bird && this.x < this.bird.x) {
       this.game.playSound("../audio/point.mp3");
       this.game.score++;
@@ -760,7 +889,6 @@ class Obstacles {
     this.draw();
   }
   handleObstacles() {
-    this.x -= this.game.gameSpeed;
     this.spawnRate = 200 * this.spawnRateFactor;
 
     if (
@@ -780,8 +908,8 @@ class Obstacles {
     for (let i = 0; i < this.obstacleArr.length; i++) {
       this.obstacleArr[i].update(); // Draw the obstacle
     }
-    if (this.obstacleArr.length > 20) {
-      this.obstacleArr.pop(); // Pop from array so no memory overload
+    if (this.obstacleArr.length > 100) {
+      this.obstacleArr = this.obstacleArr.slice(5);
     }
   }
   detectCollision() {
@@ -799,6 +927,10 @@ class Obstacles {
             this.game.playSound("../audio/bang.mp3");
             this.bird.lives--;
             this.obstacleArr[i].lifeDecreased = true;
+            if (this.bird.lives === 0) {
+              this.bird.finalyY = this.bird.y;
+              this.game.playSound("../audio/die.mp3");
+            }
           }
           return true;
         }
@@ -806,61 +938,16 @@ class Obstacles {
     }
   }
 
-  printScore(digits) {
-    this.maxScore = this.game.score;
-    if (this.game.score > this.maxScore) {
-      this.maxScore = this.game.score;
-    }
-    this.scoreWidth *= digits.length;
-    for (let i = digits.length - 1; i >= 0; i--) {
-      ctx.drawImage(
-        this.scoreImgArr[digits[i]],
-        canvas.width / 2 - this.scoreWidth / 2 / 2 + 5 + 55,
-        canvas.height / 2 - 42 / 2,
-        24 / 2,
-        36 / 2
-      );
-      this.scoreWidth -= 50;
-    }
-  }
-
-  printTable() {
-    ctx.drawImage(
-      this.panelScore,
-      canvas.width / 2 - (113 * 1.7) / 2,
-      canvas.height / 2 - (57 * 1.7) / 2,
-      113 * 1.7,
-      57 * 1.7
-    );
-    this.drawMedal();
-  }
-
-  determineMedal() {
-    if (this.game.score > 10) {
-      this.medalImg = this.goldMedal;
-    } else if (this.game.score > 5) {
-      this.medalImg = this.silverMedal;
-    } else {
-      this.medalImg = this.bronzeMedal;
-    }
-    return this.medalImg;
-  }
-
-  drawMedal() {
-    ctx.drawImage(this.determineMedal(), 278, 188, 22 * 1.6, 22 * 1.6);
-  }
-
-  getDigitArray() {
-    let temp = this.game.score;
+  getDigitArray(score) {
     let digits = [];
-    if (temp !== 0) {
-      while (temp > 0) {
-        let digit = Math.round(temp % 10);
-        temp = Math.floor(temp / 10);
+    if (score !== 0) {
+      while (score > 0) {
+        let digit = Math.round(score % 10);
+        score = Math.floor(score / 10);
         digits.push(digit);
       }
     } else {
-      digits.push(temp);
+      digits.push(score);
     }
     return digits;
   }
@@ -875,24 +962,6 @@ class Obstacles {
         this.lifeDecreased = false;
       }
     }
-  }
-
-  drawGameOver() {
-    let digits = this.getDigitArray();
-    this.game.playSound("../audio/die.mp3");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    this.game.handleBackground();
-    this.handleObstacles();
-    ctx.drawImage(this.bang, this.bird.x, this.bird.y - 20, 100, 100);
-    ctx.drawImage(
-      this.gameOver,
-      canvas.width / 2 - 192 / 2,
-      canvas.height / 2 - 42 / 2 - 100,
-      192,
-      42
-    );
-    this.printTable();
-    this.printScore(digits);
   }
 }
 
