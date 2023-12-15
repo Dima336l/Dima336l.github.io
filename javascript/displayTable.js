@@ -23,6 +23,7 @@ function displayUsersInTable() {
 
   // Creating table, appending images
   users.slice(0,5).forEach((user, index) => {
+    
     const row = document.createElement("tr");
     const colorClass = index % 2 === 0 ? "bg-primary" : "bg-info";
 
@@ -55,6 +56,7 @@ function displayUsersInTable() {
     tbody.appendChild(row);
   });
 }
+
 
 // Call the function to display users in the table
 displayUsersInTable();

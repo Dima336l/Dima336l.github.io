@@ -47,34 +47,34 @@ class Game {
     this.pipeCol = 0;
     this.imageNum = 0;
     this.imgArr = [this.background2, this.background1, this.background3];
-    this.goldMedal.src = "../images/flappybird images/medal_gold.png";
-    this.silverMedal.src = "../images/flappybird images/medal_silver.png";
-    this.bronzeMedal.src = "../images/flappybird images/medal_bronze.png";
-    this.panelScore.src = "../images/flappybird images/panel_score.png";
-    this.tap.src = "../images/flappybird images/Tap.png";
-    this.logo.src = "../images/flappybird images/Logo.png";
-    this.space.src = "../images/flappybird images/Space.png";
-    this.rocketFlame.src = "../images/flappybird images/Rocket Sprite.png";
-    this.doublePoints.src = "../images/flappybird images/Score Multiplier.png";
-    this.light.src = "../images/flappybird images/Lighting.png";
-    this.background.src = "../images/flappybird images/BG.png";
-    this.background1.src = "../images/flappybird images/Background1.png";
-    this.background2.src = "../images/flappybird images/Background2.png";
-    this.background3.src = "../images/flappybird images/Background3.png";
-    this.heart.src = "../images/flappybird images/heart.png";
-    this.shield.src = "../images/flappybird images/Shield.png";
-    this.jetpack.src = "../images/flappybird images/Jetpack.png";
-    this.coin.src = "../images/flappybird images/Coin.png";
-    this.small.src = "../images/flappybird images/Small.png";
-    this.globe.src = "../images/flappybird images/Globe.png";
+    this.goldMedal.src = "./images/flappybird images/medal_gold.png";
+    this.silverMedal.src = "./images/flappybird images/medal_silver.png";
+    this.bronzeMedal.src = "./images/flappybird images/medal_bronze.png";
+    this.panelScore.src = "./images/flappybird images/panel_score.png";
+    this.tap.src = "./images/flappybird images/Tap.png";
+    this.logo.src = "./images/flappybird images/Logo.png";
+    this.space.src = "./images/flappybird images/Space.png";
+    this.rocketFlame.src = "./images/flappybird images/Rocket Sprite.png";
+    this.doublePoints.src = "./images/flappybird images/Score Multiplier.png";
+    this.light.src = "./images/flappybird images/Lighting.png";
+    this.background.src = "./images/flappybird images/BG.png";
+    this.background1.src = "./images/flappybird images/Background1.png";
+    this.background2.src = "./images/flappybird images/Background2.png";
+    this.background3.src = "./images/flappybird images/Background3.png";
+    this.heart.src = "./images/flappybird images/heart.png";
+    this.shield.src = "./images/flappybird images/Shield.png";
+    this.jetpack.src = "./images/flappybird images/Jetpack.png";
+    this.coin.src = "./images/flappybird images/Coin.png";
+    this.small.src = "./images/flappybird images/Small.png";
+    this.globe.src = "./images/flappybird images/Globe.png";
     this.powerUpTypes = [
-      // "heart",
-      // "doublePoints",
+      "heart",
+      "doublePoints",
       "lighting",
-      // "shield",
-      // "small",
-      // "coin",
-      // "globe",
+      "shield",
+      "small",
+      "coin",
+      "globe",
     ];
     this.gapSize = 250;
     this.powerUpHeight = 500;
@@ -136,22 +136,10 @@ class Game {
     requestAnimationFrame(() => this.gameLoop());
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (!this.gameStarted) {
-      this.handleBackground();
-      this.drawMenu();
+      this.handleMenu();
     } else if (!this.gameOver) {
-      this.handleBackground();
-      this.particle.handleParticles();
-      this.obstacle.handleObstacles();
-      this.drawLives();
-      this.handlePowerUp();
-      this.drawShield();
-      this.drawRocket();
-      this.bird.update();
-      this.bird.draw();
-      this.handleScore();
-      this.increaseDifficulty();
-      this.obstacle.handleCollision();
-    } else if (this.gameOver) {
+      this.handleGame();
+    } else {
       this.drawGameOver();
     }
     this.restartGame();
@@ -160,16 +148,58 @@ class Game {
     this.frame++;
   }
 
+  handleMenu() {
+    this.handleBackground();
+    this.drawMenu();
+  }
+
+  handleGame() {
+    this.drawGameElements();
+    this.updateGameElements();
+  }
+  updateGameElements() {
+    this.handlePowerUp();
+    this.handleScore();
+    this.increaseDifficulty();
+    this.handleCollision();
+  }
+
+  drawGameElements() {
+    this.handleBackground();
+    this.handleParticles();
+    this.handleObstacles();
+    this.drawShield();
+    this.drawRocket();
+    this.drawBird();
+    this.drawLives();
+  }
+
+  handleParticles() {
+    this.particle.handleParticles();
+  }
+
+  handleObstacles() {
+    this.obstacle.handleObstacles();
+  }
+
+  drawBird() {
+    this.bird.update();
+    this.bird.draw();
+  }
+
+  handleCollision() {
+    this.obstacle.handleCollision();
+  }
+
   drawGameOver() {
     let digitsScore = this.obstacle.getDigitArray(this.score);
     if (!this.tempDefined) {
-    this.temp = this.score;
-    this.tempDefined = true;
-  }
-  if (this.score > this.temp) {
-    this.temp = this.score;
-  }
-  console.log(this.temp);
+      this.temp = this.score;
+      this.tempDefined = true;
+    }
+    if (this.score > this.temp) {
+      this.temp = this.score;
+    }
     let tempScore = this.obstacle.getDigitArray(this.temp);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     this.handleBackground();
@@ -208,7 +238,7 @@ class Game {
       ctx.drawImage(
         this.obstacle.scoreImgArr[digits[i]],
         390 + 24 / 2 + 15 - (24 / 2) * i,
-        175 ,
+        175,
         24 / 2,
         36 / 2
       );
@@ -285,14 +315,14 @@ class Game {
   }
 
   increaseDifficulty() {
-    if (this.score % 2 === 0 && this.score > 0 && !this.increasedDifficulty) {
+    if (this.score % 50 === 0 && this.score > 0 && !this.increasedDifficulty) {
       if (this.obstacle.spawnRate > 50) {
         this.obstacle.spawnRateFactor -= 0.25;
         if (this.gapSize > 150) this.gapSize -= 20;
         this.increasedDifficulty = true;
       }
     }
-    if (this.score % 2 !== 0) {
+    if (this.score % 50 !== 0) {
       this.increasedDifficulty = false;
     }
   }
@@ -303,20 +333,20 @@ class Game {
       this.score = 0;
       this.obstacle.obstacleArr = [];
       this.particle.particleArr = [];
+      this.deactivateCollision = false;
+      this.isGravityActive = false;
+      this.islightingActive = false;
+      this.isSmallPowerUpActive = false;
+      this.isShieldActive = false;
       this.powerUp = null;
       this.frame = 0;
-      this.bird.lives = 1;
+      this.bird.lives = 3;
       this.gameRestarted = false;
       this.bird.x = 100;
       this.bird.y = 200;
       this.obstacle.spawnRateFactor = 1;
       this.gapSize = 250;
     }
-  }
-
-  handleGameOver() {
-    this.updateScore();
-    this.restartGame();
   }
 
   handleScore() {
@@ -397,13 +427,19 @@ class Game {
 
   drawShield() {
     if (this.isSmallPowerUpActive) {
-      this.scaleDown = 9;
-      this.offSetX = 5;
-      this.offSetY = 10;
+      if (this.islightingActive) {
+        this.scaleDown = 8;
+        this.offSetX = -25;
+        this.offSetY = 5;
+      } else {
+        this.scaleDown = 8;
+        this.offSetX = 16;
+        this.offSetY = 15;
+      }
     } else {
       this.scaleDown = 4.5;
-      this.offSetX = 18;
-      this.offSetY = 20;
+      this.offSetX = 27;
+      this.offSetY = 25;
     }
     if (this.isShieldActive) {
       ctx.drawImage(
@@ -464,23 +500,26 @@ class Game {
 
   updateScore() {
     const users = JSON.parse(localStorage.getItem("users")) || [];
-    const loggedInUserArr =
-      JSON.parse(localStorage.getItem("loggedInUser")) || [];
-
-    if (loggedInUserArr.length > 0) {
-      const loggedInUser = loggedInUserArr[0];
-      if (loggedInUser && loggedInUser.score !== undefined) {
-        if (this.score > loggedInUser.score) {
-          loggedInUser.score = this.score;
-          const loggedInUserIndex = users.findIndex(
-            (user) => user.email === loggedInUser.email
-          );
-          if (loggedInUserIndex !== -1) {
-            users[loggedInUserIndex] = loggedInUser;
-            localStorage.setItem("users", JSON.stringify(users));
-          }
-        }
+    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser")) || [];
+    if (loggedInUser && loggedInUser.score !== undefined) {
+      console.log(users[0]);
+      console.log("This.score" + this.score);
+      console.log("LoggedInUser.score" + loggedInUser.score);
+      if (this.score > loggedInUser.score) {
+        this.updateLoggedInUserScore(loggedInUser);
       }
+    }
+  }
+
+  updateLoggedInUserScore(loggedInUser) {
+    loggedInUser.score = this.score;
+    const loggedInUserIndex = users.findIndex(
+      (user) => user.email === loggedInUser.email
+    );
+    if (loggedInUserIndex !== -1) {
+      users[loggedInUserIndex] = loggedInUser;
+      localStorage.setItem("users", JSON.stringify(users));
+      localStorage.setItem("loggedInUser", JSON.stringify(loggedInUser));
     }
   }
 
@@ -636,7 +675,7 @@ class Bird {
     this.flappAllowed = true;
     this.lastFlapTime = 0;
     this.ratio = 1.7;
-    this.lives = 1;
+    this.lives = 3;
     this.frameX = 0;
     this.frameXidle = 5;
     this.frameXSleeping = 6;
@@ -644,7 +683,7 @@ class Bird {
     this.offSetY = 0;
     this.curve = 0;
     this.character = new Image();
-    this.character.src = "../images/flappybird images/BirdSpriteBig.png";
+    this.character.src = "./images/flappybird images/BirdSpriteBig.png";
 
     // Key press event handling
     window.addEventListener("keydown", (e) => {
@@ -699,7 +738,7 @@ class Bird {
 
   draw() {
     if (this.game.isSmallPowerUpActive) {
-      this.ratio = 1;
+      this.ratio = 0.7;
     } else {
       this.ratio = 1.3;
     }
@@ -783,7 +822,7 @@ class Bird {
     if (this.audio) {
       this.audio.currentTime = 0;
     } else {
-      this.audio = new Audio("../audio/flap.mp3");
+      this.audio = new Audio("./audio/flap.mp3");
     }
     this.audio.play();
   }
@@ -818,19 +857,19 @@ class Obstacles {
     this.seven = new Image();
     this.eight = new Image();
     this.nine = new Image();
-    this.zero.src = "../images/flappybird images/0.png";
-    this.one.src = "../images/flappybird images/1.png";
-    this.two.src = "../images/flappybird images/2.png";
-    this.three.src = "../images/flappybird images/3.png";
-    this.four.src = "../images/flappybird images/4.png";
-    this.five.src = "../images/flappybird images/5.png";
-    this.six.src = "../images/flappybird images/6.png";
-    this.seven.src = "../images/flappybird images/7.png";
-    this.eight.src = "../images/flappybird images/8.png";
-    this.nine.src = "../images/flappybird images/9.png";
-    this.gameOver.src = "../images/flappybird images/gameOver.png";
-    this.pipeSprite.src = "../images/flappybird images/PipeSprite.png";
-    this.bang.src = "../images/flappybird images/bang.png";
+    this.zero.src = "./images/flappybird images/0.png";
+    this.one.src = "./images/flappybird images/1.png";
+    this.two.src = "./images/flappybird images/2.png";
+    this.three.src = "./images/flappybird images/3.png";
+    this.four.src = "./images/flappybird images/4.png";
+    this.five.src = "./images/flappybird images/5.png";
+    this.six.src = "./images/flappybird images/6.png";
+    this.seven.src = "./images/flappybird images/7.png";
+    this.eight.src = "./images/flappybird images/8.png";
+    this.nine.src = "./images/flappybird images/9.png";
+    this.gameOver.src = "./images/flappybird images/gameOver.png";
+    this.pipeSprite.src = "./images/flappybird images/PipeSprite.png";
+    this.bang.src = "./images/flappybird images/bang.png";
     this.scoreImgArr = [
       this.zero,
       this.one,
@@ -881,7 +920,7 @@ class Obstacles {
     }
 
     if (!this.counted && this.bird && this.x < this.bird.x) {
-      this.game.playSound("../audio/point.mp3");
+      this.game.playSound("./audio/point.mp3");
       this.game.score++;
       this.game.score += this.game.scoreBonus;
       this.counted = true; // Flag so we dont keep counting the same obstacle
@@ -924,12 +963,13 @@ class Obstacles {
               this.bird.y + this.bird.height < canvas.height))
         ) {
           if (!this.obstacleArr[i].lifeDecreased) {
-            this.game.playSound("../audio/bang.mp3");
+            this.game.playSound("./audio/bang.mp3");
             this.bird.lives--;
             this.obstacleArr[i].lifeDecreased = true;
             if (this.bird.lives === 0) {
               this.bird.finalyY = this.bird.y;
-              this.game.playSound("../audio/die.mp3");
+              this.game.playSound("./audio/die.mp3");
+              this.game.updateScore();
             }
           }
           return true;
@@ -983,7 +1023,7 @@ class Particle {
   }
   draw() {
     if (this.game.isSmallPowerUpActive) {
-      this.offSetY = 5;
+      this.offSetY = 10;
     } else {
       this.offSetY = 2;
     }

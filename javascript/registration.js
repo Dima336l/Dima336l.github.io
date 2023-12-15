@@ -105,6 +105,7 @@ function saveUserData() {
     users.push(user);
     // Save the updated users array to localStorage
     localStorage.setItem("users", JSON.stringify(users));
+    localStorage.setItem("loggedInUser", JSON.stringify(user));
 
     // Redirect to the home page after a successful registration
     window.location.href = "http://127.0.0.1:5500/index.html";
