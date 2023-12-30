@@ -135,13 +135,9 @@ class Game {
   gameLoop() {
     requestAnimationFrame(() => this.gameLoop());
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if (!this.gameStarted) {
-      this.handleMenu();
-    } else if (!this.gameOver) {
-      this.handleGame();
-    } else {
-      this.drawGameOver();
-    }
+    this.handleMenu();
+    this.handleGame();
+    this.drawGameOver();
     this.restartGame();
     this.angle += 0.12;
     this.hue++;
@@ -149,13 +145,17 @@ class Game {
   }
 
   handleMenu() {
-    this.handleBackground();
-    this.drawMenu();
+    if (!this.gameStarted) {
+      this.handleBackground();
+      this.drawMenu();
+    }
   }
 
   handleGame() {
-    this.drawGameElements();
-    this.updateGameElements();
+    if (!this.gameOver && this.gameStarted) {
+      this.drawGameElements();
+      this.updateGameElements();
+    }
   }
   updateGameElements() {
     this.handlePowerUp();
@@ -192,45 +192,53 @@ class Game {
   }
 
   drawGameOver() {
-    let digitsScore = this.obstacle.getDigitArray(this.score);
-    if (!this.tempDefined) {
-      this.temp = this.score;
-      this.tempDefined = true;
-    }
-    if (this.score > this.temp) {
-      this.temp = this.score;
-    }
-    let tempScore = this.obstacle.getDigitArray(this.temp);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    this.handleBackground();
-    this.obstacle.handleObstacles();
-    ctx.drawImage(
-      this.obstacle.gameOver,
-      canvas.width / 2 - 192 / 2,
-      canvas.height / 2 - 42 / 2 - 130,
-      192,
-      42
-    );
-    this.printTable();
-    ctx.drawImage(this.obstacle.bang, this.bird.x, this.bird.finalyY, 100, 100);
-    this.printScore(digitsScore);
-    this.printScoreMax(tempScore);
-    ctx.drawImage(
-      this.space,
-      this.xForSpace,
-      110,
-      this.spaceWidth * 3.1,
-      this.spaceHeight * 3.1
-    );
+    if (this.gameOver) {
+      let digitsScore = this.obstacle.getDigitArray(this.score);
+      if (!this.tempDefined) {
+        this.temp = this.score;
+        this.tempDefined = true;
+      }
+      if (this.score > this.temp) {
+        this.temp = this.score;
+      }
+      let tempScore = this.obstacle.getDigitArray(this.temp);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      this.handleBackground();
+      this.obstacle.handleObstacles();
+      ctx.drawImage(
+        this.obstacle.gameOver,
+        canvas.width / 2 - 192 / 2,
+        canvas.height / 2 - 42 / 2 - 130,
+        192,
+        42
+      );
+      this.printTable();
+      ctx.drawImage(
+        this.obstacle.bang,
+        this.bird.x,
+        this.bird.finalyY,
+        100,
+        100
+      );
+      this.printScore(digitsScore);
+      this.printScoreMax(tempScore);
+      ctx.drawImage(
+        this.space,
+        this.xForSpace,
+        110,
+        this.spaceWidth * 3.1,
+        this.spaceHeight * 3.1
+      );
 
-    ctx.drawImage(
-      this.tap,
-      this.xForSpace + 125,
-      295,
-      this.tapWidth / 8,
-      this.tapHeight / 8
-    );
-    this.bird.drawSleeping();
+      ctx.drawImage(
+        this.tap,
+        this.xForSpace + 125,
+        295,
+        this.tapWidth / 8,
+        this.tapHeight / 8
+      );
+      this.bird.drawSleeping();
+    }
   }
 
   printScoreMax(digits) {
@@ -318,7 +326,7 @@ class Game {
     if (this.score % 50 === 0 && this.score > 0 && !this.increasedDifficulty) {
       if (this.obstacle.spawnRate > 50) {
         this.obstacle.spawnRateFactor -= 0.25;
-        if (this.gapSize > 150) this.gapSize -= 20;
+        if (this.gapSize > 175) this.gapSize -= 25;
         this.increasedDifficulty = true;
       }
     }
@@ -502,9 +510,6 @@ class Game {
     const users = JSON.parse(localStorage.getItem("users")) || [];
     const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser")) || [];
     if (loggedInUser && loggedInUser.score !== undefined) {
-      console.log(users[0]);
-      console.log("This.score" + this.score);
-      console.log("LoggedInUser.score" + loggedInUser.score);
       if (this.score > loggedInUser.score) {
         this.updateLoggedInUserScore(loggedInUser);
       }
@@ -527,6 +532,7 @@ class Game {
     this.spawnPowerUp();
     if (this.powerUp !== null) {
       if (this.powerUp instanceof Globe) {
+        this.powerUp.offSetX = -15;
         this.scaleFactor = 1.5;
       } else {
         this.scaleFactor = 1;
@@ -558,8 +564,12 @@ class Game {
             (this.powerUpHeight / 10) * this.scaleFactor;
       if (birdInRange) {
         if (!this.powerUp.consumed) {
-          this.powerUp.effect();
-          this.resetPowerUp();
+          if (
+            !(this.powerUp instanceof HeartPowerUp && this.bird.lives === 3)
+          ) {
+            this.powerUp.effect();
+            this.resetPowerUp();
+          }
         }
       } else if (
         this.powerUp.x + (this.powerUpWidth / 10) * this.scaleFactor <
@@ -571,6 +581,7 @@ class Game {
   }
 
   resetPowerUp() {
+    console.log("Power up Reset");
     this.powerUp.consumed = true;
     this.powerUp = null;
   }
@@ -1053,7 +1064,7 @@ class PowerUp {
     this.bird = bird;
     this.img = new Image();
     this.img.src = imgSrc;
-    this.offSetX = 13;
+    this.offSetX = 0;
     this.x = canvas.width;
     this.powerUp = null;
     this.consumed = false;
@@ -1071,7 +1082,7 @@ class PowerUp {
     if (!this.consumed) {
       ctx.drawImage(
         this.img,
-        this.x,
+        this.x + this.offSetX,
         this.y,
         (this.game.powerUpHeight / 10) * this.game.scaleFactor,
         (this.game.powerUpWidth / 10) * this.game.scaleFactor

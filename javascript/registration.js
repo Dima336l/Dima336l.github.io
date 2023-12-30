@@ -108,7 +108,7 @@ function saveUserData() {
     localStorage.setItem("loggedInUser", JSON.stringify(user));
 
     // Redirect to the home page after a successful registration
-    window.location.href = "http://127.0.0.1:5500/index.html";
+    window.location.href = "../index.html";
   } else {
     // Handle the case where the user already exists
     const userExistsError = document.getElementById("userExistsError");
